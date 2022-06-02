@@ -43,7 +43,7 @@ class Shamir:
         product = self.__gf(1)
         # precomputes the numerator in li
         for xi in x:
-            product *= xi
+            product *= -xi
 
         sums = self.__gf(0)
         for i in range(len(x)):
@@ -54,7 +54,7 @@ class Shamir:
                 denominator *= x[i] - x[j]
             li = (product / x[i]) / denominator  # li(0)
             sums += y[i] * li
-        return int(sums)
+        return int(-sums)
 
     def __poly(self, x, coeffs):
         """
@@ -68,10 +68,9 @@ class Shamir:
 
 
 if __name__ == '__main__':
-    # (3,5) sharing scheme
-    k, n = 3, 5
+    k, n = 4, 5
     p = 251
-    secret = 150
+    secret = 100
     print(f'Original Secret: {secret}')
     ss = Shamir(p)
     # Generation of shares
@@ -81,13 +80,13 @@ if __name__ == '__main__':
     print(f'Shares2: {shares2}')
 
     # Secret Reconstruction
-    pool = shares1[0:3]
+    pool = shares1[0:k]
     print(f'Reconstruct with Shares1 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = shares2[0:3]
+    pool = shares2[0:k]
     print(f'Reconstruct with Shares2 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = [(shares1[i][0], ((shares1[i][1] + shares2[i][1]) % p)) for i in range(3)]
+    pool = [(shares1[i][0], ((shares1[i][1] + shares2[i][1]) % p)) for i in range(k)]
     print(f'Reconstruct with Shares1 + Shares2 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = [(shares1[i][0], ((shares1[i][1] + 80) % p)) for i in range(3)]
+    pool = [(shares1[i][0], ((shares1[i][1] + 80) % p)) for i in range(k)]
     print(f'Reconstruct with Shares1 + 80 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = [(shares1[i][0], ((shares1[i][1] * 3) % p)) for i in range(3)]
+    pool = [(shares1[i][0], ((shares1[i][1] * 3) % p)) for i in range(k)]
     print(f'Reconstruct with Shares1 * 3 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
