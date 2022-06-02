@@ -12,7 +12,8 @@ class Shamir:
     def __init__(self, order):
         """
         Initializes with the assigned finite field.
-        :param order: order of the finite field. The order must be a prime power.
+        :param order: order of the finite field.
+        The order must be a prime number. Not support prime power yet, e.g., 2^8.
         """
         self.__gf = GF(order)
 
@@ -69,9 +70,10 @@ class Shamir:
 if __name__ == '__main__':
     # (3,5) sharing scheme
     k, n = 3, 5
+    p = 251
     secret = 150
     print(f'Original Secret: {secret}')
-    ss = Shamir(256)
+    ss = Shamir(p)
     # Generation of shares
     shares1 = ss.share(k, n, secret)
     print(f'Shares1: {shares1}')
@@ -83,9 +85,9 @@ if __name__ == '__main__':
     print(f'Reconstruct with Shares1 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
     pool = shares2[0:3]
     print(f'Reconstruct with Shares2 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = [(shares1[i][0], ((shares1[i][1] + shares2[i][1]) % 256)) for i in range(3)]
+    pool = [(shares1[i][0], ((shares1[i][1] + shares2[i][1]) % p)) for i in range(3)]
     print(f'Reconstruct with Shares1 + Shares2 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = [(shares1[i][0], ((shares1[i][1] + 80) % 256)) for i in range(3)]
+    pool = [(shares1[i][0], ((shares1[i][1] + 80) % p)) for i in range(3)]
     print(f'Reconstruct with Shares1 + 80 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
-    pool = [(shares1[i][0], ((shares1[i][1] * 3) % 256)) for i in range(3)]
+    pool = [(shares1[i][0], ((shares1[i][1] * 3) % p)) for i in range(3)]
     print(f'Reconstruct with Shares1 * 3 {pool}. Reconstructed Secret: {ss.reveal(pool)}')
