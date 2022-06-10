@@ -57,10 +57,6 @@ class Shamir:
         return int(-sums)
 
     def __poly(self, x, coeffs):
-        """
-        Generates a `y` on the graph of given polynomial in `x`.
-        The polynomial is given by the list of `coeffs`.
-        """
         y = self.__gf(0)
         for index, val in enumerate(coeffs[::-1]):
             y += x ** index * val
